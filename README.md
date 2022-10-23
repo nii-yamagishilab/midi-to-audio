@@ -1,3 +1,3 @@
 # midi-to-audio
-Project for MIDI to Audio Synthesis
+Project for Paper "CAN KNOWLEDGE OF END-TO-END TEXT-TO-SPEECH MODELS IMPROVE NEURAL MIDI-TO-AUDIO SYNTHESIS SYSTEMS?".
 
