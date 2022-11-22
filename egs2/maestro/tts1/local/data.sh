@@ -11,7 +11,7 @@ log() {
 }
 SECONDS=0
 
-stage=0
+stage=-1
 stop_stage=2
 
 sample_rate=16000
