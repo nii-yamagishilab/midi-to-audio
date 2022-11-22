@@ -3,4 +3,4 @@
 if [ -z "${PS1:-}" ]; then
     PS1=__dummy__
 fi
-. /home/smg/v-xuanshi/anaconda3/etc/profile.d/conda.sh && conda deactivate && conda activate midi2wav_39
+. /home/smg/v-xuanshi/anaconda3/etc/profile.d/conda.sh && conda deactivate && conda activate midi2wav_oc
