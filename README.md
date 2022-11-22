@@ -18,6 +18,7 @@ Suggested dependencies:
 python-version 3.9
 pytorch: 1.8.0 / 1.9?
 espnet: 0.10
+pretty_midi: 0.2.9
 ```
 
 Steps:
@@ -42,15 +43,35 @@ $ cd <midi2wav-root>/tools
 $ make TH_VERSION=1.8 CUDA_VERSION=11.1
 ```
 
-Next, download project data and models:
+Next, download models:
 work_dir: `egs2/maestro/tts1`
- * MAESTRO data: make the directory `downloads`, download from (maestro)[https://storage.googleapis.com/magentadata/datasets/maestro/v3.0.0/maestro-v3.0.0.zip] and unzip the dataset.
  * MIDI2WAV models: make the directory  `model_zoo`, download well-trained model weights and put them here. 
 
 
 ## How to use
 
-See the scripts `warmup.sh` (warm start training), `train_from_scratch.sh` (train on VCTK data only), and `predictmel.sh` (prediction).  The scripts assume a SLURM-type computing environment.  You will need to change the paths to match your environments and point to your data.  Here are the parameters relevant to multi-speaker TTS:
+### Code analysis
+The scripts are developed based on kaldi-style ESPnet.
+
+There are 7 main stages:
+* 1~4:  Data Preparation
+* 5: Stats Collection
+* 6: Model Training
+* 7: Model Inference
+
+### Scripts to run experiments
+
+Experimental environment setting:
+`./run.sh --stage 1 --stop_stage 5 --ngpu ${num_gpu} --tts_task gan_mta --train_config ./conf/tuning/finetune_joint_transformer_hifigan_timbre.yaml`
+
+Model training:
+`./run.sh --stage 6 --stop_stage 6 --ngpu ${num_gpu} --tts_task gan_mta --train_config ./conf/tuning/finetune_joint_transformer_hifigan_timbre.yaml`
+
+Model inference:
+`./run.sh --stage 7 --stop_stage 7 --ngpu ${num_gpu} --tts_task gan_mta --train_config ./conf/tuning/finetune_joint_transformer_hifigan_timbre.yaml`
+
+### Important parameters
+Here are the parameters relevant to multi-speaker TTS:
  * `source-data-root` and `target-data-root`: path to your source and target preprocessed data
  * `selected-list-dir`: train/eval/test set definitions
  * `batch_size`: if you get OOM errors, try reducing the batch size
@@ -60,13 +81,10 @@ See the scripts `warmup.sh` (warm start training), `train_from_scratch.sh` (trai
  * `speaker_embedding_projection_out_dim=64`: We found experimentally that projecting the speaker embedding to a lower dimension helped to reduce overfitting.  You can try different values, but to use our pretrained multi-speaker models you will have to use 64.
  * `speaker_embedding_offset`: must match the ID of your first speaker.  <!-- TODO: deprecate this -->
 
-The scripts are set up using `embedding_file="vctk-x-vector.txt",speaker_embedding_dim='200'` which is default x-vectors.  Please change it to `embedding_file="vctk-lde-3.txt",speaker_embedding_dim='512'` to use LDE embeddings from our best system.
-
-<!-- num_speakers does not actually get used with external_embedding so TODO remove this from the scripts. -->
 
 ## Acknowledgments
 
-This work was partially supported by a JST CREST Grant (JPMJCR18A6, VoicePersonae project), Japan, and by MEXT KAKENHI Grants (16H06302, 17H04687, 18H04120, 18H04112, 18KT0051, 19K24372), Japan. The numerical calculations were carried out on the TSUBAME 3.0 supercomputer at the Tokyo Institute of Technology.
+This study is partially supported by the Japanese-French joint national project called VoicePersonae supported by JST CREST (JPMJCR18A6, JPMJCR20D3), MEXT KAKENHI Grants (21K17775, 21H04906, 21K11951), Japan, and Google AI for Japan program.
 
 ## Licence
 
