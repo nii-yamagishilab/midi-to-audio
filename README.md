@@ -15,10 +15,12 @@ It is recommended to follow the official [installation](https://espnet.github.io
 
 Suggested dependencies:
 ```
-python-version 3.9
-pytorch: 1.8.0 / 1.9?
-espnet: 0.10
-pretty_midi: 0.2.9
+python-version==3.9
+pytorch==1.8.0
+espnet==0.10
+pretty_midi==0.2.9
+wandb==0.12.9
+protobuf==3.19.3
 ```
 
 Steps:
@@ -45,7 +47,7 @@ $ make TH_VERSION=1.8 CUDA_VERSION=11.1
 
 Next, download models:
 work_dir: `egs2/maestro/tts1`
- * MIDI2WAV models: make the directory  `model_zoo`, download well-trained model weights and put them here. 
+ * MIDI2WAV models: make the directory  `model_zoo`, download well-trained model weights from (placeholder) and put them here. 
 
 
 ## How to use
@@ -62,25 +64,19 @@ There are 7 main stages:
 ### Scripts to run experiments
 
 Experimental environment setting:
-`./run.sh --stage 1 --stop_stage 5 --ngpu ${num_gpu} --tts_task gan_mta --train_config ./conf/tuning/finetune_joint_transformer_hifigan_timbre.yaml`
+`./run.sh --stage 1 --stop_stage 5 --ngpu ${num_gpu} --tts_task mta --train_config ./conf/train.yaml`
 
-Model training:
-`./run.sh --stage 6 --stop_stage 6 --ngpu ${num_gpu} --tts_task gan_mta --train_config ./conf/tuning/finetune_joint_transformer_hifigan_timbre.yaml`
+Model training (Acoustic Model):
+`./run.sh --stage 6 --stop_stage 6 --ngpu ${num_gpu} --tts_task mta --train_config ./conf/train.yaml`
 
-Model inference:
-`./run.sh --stage 7 --stop_stage 7 --ngpu ${num_gpu} --tts_task gan_mta --train_config ./conf/tuning/finetune_joint_transformer_hifigan_timbre.yaml`
+Model training (Synthesizer or Joint training):
+`./run.sh --stage 6 --stop_stage 6 --ngpu ${num_gpu} --tts_task gan_mta --train_config ./conf/tuning/finetune_joint_transformer_hifigan.yaml`
 
-### Important parameters
-Here are the parameters relevant to multi-speaker TTS:
- * `source-data-root` and `target-data-root`: path to your source and target preprocessed data
- * `selected-list-dir`: train/eval/test set definitions
- * `batch_size`: if you get OOM errors, try reducing the batch size
- * `use_external_speaker_embedding=True`: use speaker embeddings that you provide from a file (see the files in the `speaker_embeddings` directory)
- * `embedding_file`: path to the file containing your speaker embeddings
- * `speaker_embedding_dim`:  dimension should match the dimension in your embedding file <!-- TODO: deprecate this -->
- * `speaker_embedding_projection_out_dim=64`: We found experimentally that projecting the speaker embedding to a lower dimension helped to reduce overfitting.  You can try different values, but to use our pretrained multi-speaker models you will have to use 64.
- * `speaker_embedding_offset`: must match the ID of your first speaker.  <!-- TODO: deprecate this -->
+Model inference (Acoustic Model):
+`./run.sh --stage 7 --stop_stage 7 --skip_data_prep true --ngpu ${num_gpu} --tts_task mta --train_config ./conf/.yaml`
 
+Model inference (Synthesizer or Joint training):
+`./run.sh --stage 7 --stop_stage 7 --skip_data_prep true --ngpu ${num_gpu} --tts_task gan_mta --train_config ./conf/tuning/finetune_joint_transformer_hifigan.yaml`
 
 ## Acknowledgments
 
