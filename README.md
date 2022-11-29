@@ -64,7 +64,7 @@ $ make TH_VERSION=1.8 CUDA_VERSION=11.1
 
 Next, download models:
 work_dir: `egs2/maestro/tts1`
- * MIDI2WAV models: make the directory  `exp/tts_finetune_joint_transformer_hifigan_raw_proll`, download well-trained model from [Zenodo](https://zenodo.org/record/7370009#.Y4QaQi8Rr0o) ,rename the model as `train.loss.ave.pth`, and put it under the directory.
+ * MIDI2WAV models: make the directory  `exp/tts_finetune_joint_transformer_hifigan_raw_proll`, download well-trained model from [Zenodo](https://zenodo.org/record/7370009#.Y4QaQi8Rr0o), rename the model as `train.loss.ave.pth`, and put it under the directory.
 
 
 ## How to use
