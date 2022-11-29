@@ -1,13 +1,32 @@
 # CAN KNOWLEDGE OF END-TO-END TEXT-TO-SPEECH MODELS IMPROVE NEURAL MIDI-TO-AUDIO SYNTHESIS SYSTEMS?
 
-This is an implementation of our paper submitted to ICASSP 2023:  
-"CAN KNOWLEDGE OF END-TO-END TEXT-TO-SPEECH MODELS IMPROVE NEURAL MIDI-TO-AUDIO SYNTHESIS SYSTEMS?," by Xuan Shi, Erica Cooper, Xin Wang, Junichi Yamagishi, and Shrikanth Narayanan.  
-Please cite this paper if you use this code.
+This is the pretrained model for our paper submitted to ICASSP 2023:
+"CAN KNOWLEDGE OF END-TO-END TEXT-TO-SPEECH MODELS IMPROVE NEURAL MIDI-TO-AUDIO SYNTHESIS SYSTEMS?"
 
-Audio samples can be found here:  https://github.com/nii-yamagishilab-visitors/sample-midi-to-audio (placehoder)
+Xuan Shi, Erica Cooper, Xin Wang, Junichi Yamagishi, Shrikanth Narayanan
 
-## News:
- * 2022-11-16: Open Source Code for midi-to-audio synthesis.
+Please cite this paper if you use this pretrained model.
+This pretrained model goes with the code found here:
+https://github.com/nii-yamagishilab/midi-to-audio
+
+See the following part of the codebase's README for more information about dependencies etc.
+
+The code for training this model was based on the [ESPnet-TTS project](https://github.com/espnet/espnet):
+"ESPnet-TTS: Unified, reproducible, and integratable open source end-to-end text-to-speech toolkit," ICASSP 2020
+Tomoki Hayashi, Ryuichi Yamamoto, Katsuki Inoue, Takenori Yoshimura, Shinji Watanabe, Tomoki Toda, Kazuya Takeda, Yu Zhang, and Xu Tan
+
+The data used to train this model was trained using the [MAESTRO](https://magenta.tensorflow.org/datasets/maestro) dataset:
+"Enabling factorized piano music modeling and generation with the MAESTRO dataset," ICLR 2019
+Curtis Hawthorne, Andriy Stasyuk, Adam Roberts, Ian Simon, Cheng-Zhi Anna Huang, Sander Dieleman, Erich Elsen, JesseEngel, and Douglas Eck
+
+This model consists of a MIDI-to-mel component based on **Transformer-TTS**:
+"Neural speech synthesis with transformer network," AAAI 2019
+Naihan Li, Shujie Liu, Yanqing Liu, Sheng Zhao, and Ming Liu
+and a **HiFiGAN**-based mel-to-audio component:
+"HiFi-GAN: Generative Adversarial Networks for Efficient and High Fidelity Speech Synthesis," NeurIPS 2020
+Jungil Kong, Jaehyeon Kim, and Jaekyoung Bae
+The two components were first separately trained, and then jointly fine-tuned for an additional 200K steps.
+
 
 ## Dependencies:  
 
@@ -47,7 +66,7 @@ $ make TH_VERSION=1.8 CUDA_VERSION=11.1
 
 Next, download models:
 work_dir: `egs2/maestro/tts1`
- * MIDI2WAV models: make the directory  `model_zoo`, download well-trained model weights from (placeholder) and put them here. 
+ * MIDI2WAV models: make the directory  `exp/tts_finetune_joint_transformer_hifigan_raw_proll`, download well-trained model from [Zenodo](https://zenodo.org/record/7370009#.Y4QaQi8Rr0o) ,rename the model as `train.loss.ave.pth`, and put it under the directory.
 
 
 ## How to use
@@ -72,28 +91,17 @@ Model training (Acoustic Model):
 Model training (Synthesizer or Joint training):
 `./run.sh --stage 6 --stop_stage 6 --ngpu ${num_gpu} --tts_task gan_mta --train_config ./conf/tuning/finetune_joint_transformer_hifigan.yaml`
 
-Model inference (Acoustic Model):
-`./run.sh --stage 7 --stop_stage 7 --skip_data_prep true --ngpu ${num_gpu} --tts_task mta --train_config ./conf/.yaml`
-
 Model inference (Synthesizer or Joint training):
-`./run.sh --stage 7 --stop_stage 7 --skip_data_prep true --ngpu ${num_gpu} --tts_task gan_mta --train_config ./conf/tuning/finetune_joint_transformer_hifigan.yaml`
+`./run.sh --stage 7 --stop_stage 7 --skip_data_prep true --ngpu ${num_gpu} --tts_task gan_mta --train_config ./conf/tuning/finetune_joint_transformer_hifigan.yaml `
 
-## Acknowledgments
+## ACKNOWLEDGMENTS
+This study is supported by the Japanese-French joint national project called
+VoicePersonae, JST CREST (JPMJCR18A6, JPMJCR20D3), MEXT KAKENHI Grants
+(21K17775, 21H04906, 21K11951), Japan, and Google AI for Japan program.
 
-This study is partially supported by the Japanese-French joint national project called VoicePersonae supported by JST CREST (JPMJCR18A6, JPMJCR20D3), MEXT KAKENHI Grants (21K17775, 21H04906, 21K11951), Japan, and Google AI for Japan program.
+## COPYING
+This pretrained model is licensed under the Creative Commons License:
+Attribution 4.0 International
+http://creativecommons.org/licenses/by/4.0/legalcode 
+Please see `LICENSE.txt` for the terms and conditions of this pretrained model.
 
-## Licence
-
-BSD 3-Clause License
-
-Copyright (c) 2020, Yamagishi Laboratory, National Institute of Informatics All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-
- * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-
- * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-
- * Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
