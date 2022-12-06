@@ -1,14 +1,9 @@
 # CAN KNOWLEDGE OF END-TO-END TEXT-TO-SPEECH MODELS IMPROVE NEURAL MIDI-TO-AUDIO SYNTHESIS SYSTEMS?
 
-<<<<<<< HEAD
 This is the implementation for our paper submitted to ICASSP 2023:
 "CAN KNOWLEDGE OF END-TO-END TEXT-TO-SPEECH MODELS IMPROVE NEURAL MIDI-TO-AUDIO SYNTHESIS SYSTEMS?"
 
 Xuan Shi, Erica Cooper, Xin Wang, Junichi Yamagishi, Shrikanth Narayanan
-=======
-This is the pretrained model for our paper submitted to ICASSP 2023:
-"CAN KNOWLEDGE OF END-TO-END TEXT-TO-SPEECH MODELS IMPROVE NEURAL MIDI-TO-AUDIO SYNTHESIS SYSTEMS?" by Xuan Shi, Erica Cooper, Xin Wang, Junichi Yamagishi, Shrikanth Narayanan
->>>>>>> 52f4cd5696225abfba827fecfec52605b46e1705
 
 It is appreciated if you can cite this paper when the idea, code, and pretrained model are helpful to your research.
 
