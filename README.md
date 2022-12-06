@@ -1,23 +1,26 @@
 # CAN KNOWLEDGE OF END-TO-END TEXT-TO-SPEECH MODELS IMPROVE NEURAL MIDI-TO-AUDIO SYNTHESIS SYSTEMS?
 
+<<<<<<< HEAD
+This is the implementation for our paper submitted to ICASSP 2023:
+"CAN KNOWLEDGE OF END-TO-END TEXT-TO-SPEECH MODELS IMPROVE NEURAL MIDI-TO-AUDIO SYNTHESIS SYSTEMS?"
+
+Xuan Shi, Erica Cooper, Xin Wang, Junichi Yamagishi, Shrikanth Narayanan
+=======
 This is the pretrained model for our paper submitted to ICASSP 2023:
 "CAN KNOWLEDGE OF END-TO-END TEXT-TO-SPEECH MODELS IMPROVE NEURAL MIDI-TO-AUDIO SYNTHESIS SYSTEMS?" by Xuan Shi, Erica Cooper, Xin Wang, Junichi Yamagishi, Shrikanth Narayanan
+>>>>>>> 52f4cd5696225abfba827fecfec52605b46e1705
 
-Please cite this paper if you use this pretrained model.
-This pretrained model goes with the code found here:
-https://github.com/nii-yamagishilab/midi-to-audio
+It is appreciated if you can cite this paper when the idea, code, and pretrained model are helpful to your research.
 
-See the following part of the codebase's README for more information about dependencies etc.
-
-The code for training this model was based on the [ESPnet-TTS project](https://github.com/espnet/espnet):
+The code for model training was based on the [ESPnet-TTS project](https://github.com/espnet/espnet):
 "ESPnet-TTS: Unified, reproducible, and integratable open source end-to-end text-to-speech toolkit," ICASSP 2020
 Tomoki Hayashi, Ryuichi Yamamoto, Katsuki Inoue, Takenori Yoshimura, Shinji Watanabe, Tomoki Toda, Kazuya Takeda, Yu Zhang, and Xu Tan
 
-The data used to train this model was trained using the [MAESTRO](https://magenta.tensorflow.org/datasets/maestro) dataset:
+The data for all experiments (training and inference) is the [MAESTRO](https://magenta.tensorflow.org/datasets/maestro) dataset:
 "Enabling factorized piano music modeling and generation with the MAESTRO dataset," ICLR 2019
 Curtis Hawthorne, Andriy Stasyuk, Adam Roberts, Ian Simon, Cheng-Zhi Anna Huang, Sander Dieleman, Erich Elsen, JesseEngel, and Douglas Eck
 
-This model consists of a MIDI-to-mel component based on **Transformer-TTS**:
+This work consists of a MIDI-to-mel component based on **Transformer-TTS**:
 "Neural speech synthesis with transformer network," AAAI 2019
 Naihan Li, Shujie Liu, Yanqing Liu, Sheng Zhao, and Ming Liu
 and a **HiFiGAN**-based mel-to-audio component:
@@ -39,6 +42,7 @@ pretty_midi==0.2.9
 wandb==0.12.9
 protobuf==3.19.3
 ```
+To avoid the potential version conflicts or package missing, it is highly encouraged to check the version of important packages mentiond above.
 
 Steps:
 1. Setup kaldi
@@ -49,11 +53,11 @@ $ ln -s <kaldi-root> .
 
 2. Setup Python environment. There are 4 types of setup method, we strongly suggest the first one.
 ```
-$ cd <espnet-root>/tools
-$ ./setup_anaconda.sh [output-dir-name|default=venv] [conda-env-name|default=root] [python-version|default=none]
+$ cd <midi2wav-root>/tools
+$ CONDA_TOOLS_DIR=$(dirname ${CONDA_EXE})/..
+$ ./setup_anaconda.sh ${CONDA_TOOLS_DIR} [conda-env-name] [python-version]
 # e.g.
-$ ./setup_anaconda.sh /home/smg/v-xuanshi/anaconda3/ midi2wav_oc 3.9
-$ ./setup_anaconda.sh ${anaconda_dir} midi2wav_oc 3.9
+$ ./setup_anaconda.sh ${CONDA_TOOLS_DIR} midi2wav 3.9
 ```
 
 3. Install ESPnet

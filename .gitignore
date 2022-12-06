@@ -48,6 +48,7 @@ egs*/*/*/sbatch*
 *.tar
 
 # tools related
+tools/activate_python.sh
 tools/bin
 tools/include
 tools/lib
