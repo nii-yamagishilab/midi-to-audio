@@ -24,23 +24,16 @@ Jungil Kong, Jaehyeon Kim, and Jaekyoung Bae
 The two components were first separately trained, and then jointly fine-tuned for an additional 200K steps.
 
 
-## Dependencies:  
+## How to use
+
+### Installment
+
+#### ESPnet-based Python Environment Setup
 
 It is recommended to follow the official [installation](https://espnet.github.io/espnet/installation.html) to set up a complete [ESPnet2](https://github.com/espnet/espnet) environment for model training.
 
-Suggested dependencies:
-```
-python-version==3.9
-pytorch==1.8.0
-espnet==0.10
-pretty_midi==0.2.9
-wandb==0.12.9
-protobuf==3.19.3
-```
-To avoid the potential version conflicts or package missing, it is highly encouraged to check the version of important packages mentiond above.
-
-Steps:
 1. Setup kaldi
+
 ```
 $ cd <midi2wav-root>/tools
 $ ln -s <kaldi-root> .
@@ -60,16 +53,34 @@ $ ./setup_anaconda.sh ${CONDA_TOOLS_DIR} midi2wav 3.9
 $ cd <midi2wav-root>/tools
 $ make TH_VERSION=1.8 CUDA_VERSION=11.1
 ```
+Make sure the espnet version is `espnet==0.10`.
 
-Next, download models:
-work_dir: `egs2/maestro/tts1`
- * MIDI2WAV models: make the directory  `exp/tts_finetune_joint_transformer_hifigan_raw_proll`, download well-trained model from [Zenodo](https://zenodo.org/record/7370009#.Y4QaQi8Rr0o), rename the model as `train.loss.ave.pth`, and put it under the directory.
+#### Python Environment Revision
 
+After the `midi2wav` conda environment set up, we will install packages for music processing and re-install some packages to avoid potential package version conflicts. 
 
-## How to use
+Suggested dependencies:
+```
+pretty_midi==0.2.9
+wandb==0.12.9
+protobuf==3.19.3
+```
+
+#### Pre-trained model preparation
+
+First, make the directory to save the pre-trained model.
+
+```
+$ cd <midi2wav-root>/egs2/maestro/tts1
+$ mkdir -p exp/tts_finetune_joint_transformer_hifigan_raw_proll
+$ cd exp/tts_finetune_joint_transformer_hifigan_raw_proll
+```
+Then, download the pre-trained model from [Zenodo](https://zenodo.org/record/7370009#.Y4QaQi8Rr0o), rename the model as `train.loss.ave.pth`, and save it under the directory mentioned above.
+
 
 ### Code analysis
-The scripts are developed based on kaldi-style ESPnet.
+
+The midi-to-wav scripts are developed based on kaldi-style ESPnet.  The main work directory is at `<midi2wav-root>/egs2/maestro/tts1`.
 
 There are 7 main stages:
 * 1~4:  Data Preparation
