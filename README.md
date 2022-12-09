@@ -1,27 +1,39 @@
 # CAN KNOWLEDGE OF END-TO-END TEXT-TO-SPEECH MODELS IMPROVE NEURAL MIDI-TO-AUDIO SYNTHESIS SYSTEMS?
 
-This is an implementation of our paper submitted to ICASSP 2023:  
-"CAN KNOWLEDGE OF END-TO-END TEXT-TO-SPEECH MODELS IMPROVE NEURAL MIDI-TO-AUDIO SYNTHESIS SYSTEMS?," by Xuan Shi, Erica Cooper, Xin Wang, Junichi Yamagishi, and Shrikanth Narayanan.  
-Please cite this paper if you use this code.
+This is the implementation for our paper submitted to ICASSP 2023:
+"CAN KNOWLEDGE OF END-TO-END TEXT-TO-SPEECH MODELS IMPROVE NEURAL MIDI-TO-AUDIO SYNTHESIS SYSTEMS?"
 
-Audio samples can be found here:  https://github.com/nii-yamagishilab-visitors/sample-midi-to-audio (placehoder)
+Xuan Shi, Erica Cooper, Xin Wang, Junichi Yamagishi, Shrikanth Narayanan
 
-## News:
- * 2022-11-16: Open Source Code for midi-to-audio synthesis.
+It is appreciated if you can cite this paper when the idea, code, and pretrained model are helpful to your research.
 
-## Dependencies:  
+The code for model training was based on the [ESPnet-TTS project](https://github.com/espnet/espnet):
+"ESPnet-TTS: Unified, reproducible, and integratable open source end-to-end text-to-speech toolkit," ICASSP 2020
+Tomoki Hayashi, Ryuichi Yamamoto, Katsuki Inoue, Takenori Yoshimura, Shinji Watanabe, Tomoki Toda, Kazuya Takeda, Yu Zhang, and Xu Tan
+
+The data for all experiments (training and inference) is the [MAESTRO](https://magenta.tensorflow.org/datasets/maestro) dataset:
+"Enabling factorized piano music modeling and generation with the MAESTRO dataset," ICLR 2019
+Curtis Hawthorne, Andriy Stasyuk, Adam Roberts, Ian Simon, Cheng-Zhi Anna Huang, Sander Dieleman, Erich Elsen, JesseEngel, and Douglas Eck
+
+This work consists of a MIDI-to-mel component based on **Transformer-TTS**:
+"Neural speech synthesis with transformer network," AAAI 2019
+Naihan Li, Shujie Liu, Yanqing Liu, Sheng Zhao, and Ming Liu
+and a **HiFiGAN**-based mel-to-audio component:
+"HiFi-GAN: Generative Adversarial Networks for Efficient and High Fidelity Speech Synthesis," NeurIPS 2020
+Jungil Kong, Jaehyeon Kim, and Jaekyoung Bae
+The two components were first separately trained, and then jointly fine-tuned for an additional 200K steps.
+
+
+## How to use
+
+### Installment
+
+#### ESPnet-based Python Environment Setup
 
 It is recommended to follow the official [installation](https://espnet.github.io/espnet/installation.html) to set up a complete [ESPnet2](https://github.com/espnet/espnet) environment for model training.
 
-Suggested dependencies:
-```
-python-version 3.9
-pytorch: 1.8.0 / 1.9?
-espnet: 0.10
-```
-
-Steps:
 1. Setup kaldi
+
 ```
 $ cd <midi2wav-root>/tools
 $ ln -s <kaldi-root> .
@@ -29,11 +41,11 @@ $ ln -s <kaldi-root> .
 
 2. Setup Python environment. There are 4 types of setup method, we strongly suggest the first one.
 ```
-$ cd <espnet-root>/tools
-$ ./setup_anaconda.sh [output-dir-name|default=venv] [conda-env-name|default=root] [python-version|default=none]
+$ cd <midi2wav-root>/tools
+$ CONDA_TOOLS_DIR=$(dirname ${CONDA_EXE})/..
+$ ./setup_anaconda.sh ${CONDA_TOOLS_DIR} [conda-env-name] [python-version]
 # e.g.
-$ ./setup_anaconda.sh /home/smg/v-xuanshi/anaconda3/ midi2wav_oc 3.9
-$ ./setup_anaconda.sh ${anaconda_dir} midi2wav_oc 3.9
+$ ./setup_anaconda.sh ${CONDA_TOOLS_DIR} midi2wav 3.9
 ```
 
 3. Install ESPnet
@@ -41,45 +53,63 @@ $ ./setup_anaconda.sh ${anaconda_dir} midi2wav_oc 3.9
 $ cd <midi2wav-root>/tools
 $ make TH_VERSION=1.8 CUDA_VERSION=11.1
 ```
+Make sure the espnet version is `espnet==0.10`.
 
-Next, download project data and models:
-work_dir: `egs2/maestro/tts1`
- * MAESTRO data: make the directory `downloads`, download from (maestro)[https://storage.googleapis.com/magentadata/datasets/maestro/v3.0.0/maestro-v3.0.0.zip] and unzip the dataset.
- * MIDI2WAV models: make the directory  `model_zoo`, download well-trained model weights and put them here. 
+#### Python Environment Revision
+
+After the `midi2wav` conda environment set up, we will install packages for music processing and re-install some packages to avoid potential package version conflicts. 
+
+Suggested dependencies:
+```
+pretty_midi==0.2.9
+wandb==0.12.9
+protobuf==3.19.3
+```
+
+#### Pre-trained model preparation
+
+First, make the directory to save the pre-trained model.
+
+```
+$ cd <midi2wav-root>/egs2/maestro/tts1
+$ mkdir -p exp/tts_finetune_joint_transformer_hifigan_raw_proll
+$ cd exp/tts_finetune_joint_transformer_hifigan_raw_proll
+```
+Then, download the pre-trained model from [Zenodo](https://zenodo.org/record/7370009#.Y4QaQi8Rr0o), rename the model as `train.loss.ave.pth`, and save it under the directory mentioned above.
 
 
-## How to use
+### Code analysis
 
-See the scripts `warmup.sh` (warm start training), `train_from_scratch.sh` (train on VCTK data only), and `predictmel.sh` (prediction).  The scripts assume a SLURM-type computing environment.  You will need to change the paths to match your environments and point to your data.  Here are the parameters relevant to multi-speaker TTS:
- * `source-data-root` and `target-data-root`: path to your source and target preprocessed data
- * `selected-list-dir`: train/eval/test set definitions
- * `batch_size`: if you get OOM errors, try reducing the batch size
- * `use_external_speaker_embedding=True`: use speaker embeddings that you provide from a file (see the files in the `speaker_embeddings` directory)
- * `embedding_file`: path to the file containing your speaker embeddings
- * `speaker_embedding_dim`:  dimension should match the dimension in your embedding file <!-- TODO: deprecate this -->
- * `speaker_embedding_projection_out_dim=64`: We found experimentally that projecting the speaker embedding to a lower dimension helped to reduce overfitting.  You can try different values, but to use our pretrained multi-speaker models you will have to use 64.
- * `speaker_embedding_offset`: must match the ID of your first speaker.  <!-- TODO: deprecate this -->
+The midi-to-wav scripts are developed based on kaldi-style ESPnet.  The main work directory is at `<midi2wav-root>/egs2/maestro/tts1`.
 
-The scripts are set up using `embedding_file="vctk-x-vector.txt",speaker_embedding_dim='200'` which is default x-vectors.  Please change it to `embedding_file="vctk-lde-3.txt",speaker_embedding_dim='512'` to use LDE embeddings from our best system.
+There are 7 main stages:
+* 1~4:  Data Preparation
+* 5: Stats Collection
+* 6: Model Training
+* 7: Model Inference
 
-<!-- num_speakers does not actually get used with external_embedding so TODO remove this from the scripts. -->
+### Scripts to run experiments
 
-## Acknowledgments
+Experimental environment setting:
+`./run.sh --stage 1 --stop_stage 5 --ngpu ${num_gpu} --tts_task mta --train_config ./conf/train.yaml`
 
-This work was partially supported by a JST CREST Grant (JPMJCR18A6, VoicePersonae project), Japan, and by MEXT KAKENHI Grants (16H06302, 17H04687, 18H04120, 18H04112, 18KT0051, 19K24372), Japan. The numerical calculations were carried out on the TSUBAME 3.0 supercomputer at the Tokyo Institute of Technology.
+Model training (Acoustic Model):
+`./run.sh --stage 6 --stop_stage 6 --ngpu ${num_gpu} --tts_task mta --train_config ./conf/train.yaml`
 
-## Licence
+Model training (Synthesizer or Joint training):
+`./run.sh --stage 6 --stop_stage 6 --ngpu ${num_gpu} --tts_task gan_mta --train_config ./conf/tuning/finetune_joint_transformer_hifigan.yaml`
 
-BSD 3-Clause License
+Model inference (Synthesizer or Joint training):
+`./run.sh --stage 7 --stop_stage 7 --skip_data_prep true --ngpu ${num_gpu} --tts_task gan_mta --train_config ./conf/tuning/finetune_joint_transformer_hifigan.yaml `
 
-Copyright (c) 2020, Yamagishi Laboratory, National Institute of Informatics All rights reserved.
+## ACKNOWLEDGMENTS
+This study is supported by the Japanese-French joint national project called
+VoicePersonae, JST CREST (JPMJCR18A6, JPMJCR20D3), MEXT KAKENHI Grants
+(21K17775, 21H04906, 21K11951), Japan, and Google AI for Japan program.
 
-Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+## COPYING
+This pretrained model is licensed under the Creative Commons License:
+Attribution 4.0 International
+http://creativecommons.org/licenses/by/4.0/legalcode 
+Please see `LICENSE.txt` for the terms and conditions of this pretrained model.
 
- * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-
- * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-
- * Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.

@@ -48,6 +48,7 @@ egs*/*/*/sbatch*
 *.tar
 
 # tools related
+tools/activate_python.sh
 tools/bin
 tools/include
 tools/lib
@@ -76,3 +77,5 @@ tools/MBROLA*
 tools/festival*
 tools/speech_tools*
 tools/phonemizer*
+
+*.DS_Store
