@@ -108,8 +108,9 @@ VoicePersonae, JST CREST (JPMJCR18A6, JPMJCR20D3), MEXT KAKENHI Grants
 (21K17775, 21H04906, 21K11951), Japan, and Google AI for Japan program.
 
 ## COPYING
-This pretrained model is licensed under the Creative Commons License:
+The code is licensed under Apache License Version 2.0, following ESPnet.
+The pretrained model is licensed under the Creative Commons License:
 Attribution 4.0 International
 http://creativecommons.org/licenses/by/4.0/legalcode 
-Please see `LICENSE.txt` for the terms and conditions of this pretrained model.
+Please see `LICENSE.txt` for the terms and conditions of the pretrained model.
 
