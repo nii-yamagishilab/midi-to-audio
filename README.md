@@ -75,7 +75,7 @@ $ cd <midi2wav-root>/egs2/maestro/tts1
 $ mkdir -p exp/tts_finetune_joint_transformer_hifigan_raw_proll
 $ cd exp/tts_finetune_joint_transformer_hifigan_raw_proll
 ```
-Then, download the pre-trained model from [Zenodo](https://zenodo.org/record/7370009#.Y4QaQi8Rr0o), rename the model as `train.loss.ave.pth`, and save it under the directory mentioned above.
+Then, download the pre-trained model from [Zenodo](https://zenodo.org/record/7439325#.Y5pcAi8Rr0o), rename the model as `train.loss.ave.pth`, and save it under the directory mentioned above.
 
 
 ### Code analysis
@@ -112,5 +112,4 @@ The code is licensed under Apache License Version 2.0, following ESPnet.
 The pretrained model is licensed under the Creative Commons License:
 Attribution 4.0 International
 http://creativecommons.org/licenses/by/4.0/legalcode 
-Please see `LICENSE.txt` for the terms and conditions of the pretrained model.
 
