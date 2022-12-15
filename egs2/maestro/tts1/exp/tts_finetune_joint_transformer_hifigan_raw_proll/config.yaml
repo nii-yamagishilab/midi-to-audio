@@ -1,0 +1,338 @@
+config: ./conf/tuning/finetune_joint_transformer_hifigan.yaml
+print_config: false
+log_level: INFO
+dry_run: false
+iterator_type: sequence
+output_dir: exp/tts_finetune_joint_transformer_hifigan_raw_proll
+ngpu: 1
+seed: 777
+num_workers: 8
+num_att_plot: 3
+dist_backend: nccl
+dist_init_method: env://
+dist_world_size: 2
+dist_rank: 0
+local_rank: 0
+dist_master_addr: localhost
+dist_master_port: 34321
+dist_launcher: null
+multiprocessing_distributed: true
+unused_parameters: true
+sharded_ddp: false
+cudnn_enabled: true
+cudnn_benchmark: false
+cudnn_deterministic: false
+collect_stats: false
+write_collected_feats: false
+max_epoch: 200
+patience: null
+val_scheduler_criterion:
+- valid
+- loss
+early_stopping_criterion:
+- valid
+- loss
+- min
+best_model_criterion:
+-   - valid
+    - text2mel_loss
+    - min
+-   - train
+    - text2mel_loss
+    - min
+-   - train
+    - total_count
+    - max
+keep_nbest_models: 5
+grad_clip: -1
+grad_clip_type: 2.0
+grad_noise: false
+accum_grad: 1
+no_forward_run: false
+resume: true
+train_dtype: float32
+use_amp: false
+log_interval: 50
+use_tensorboard: true
+use_wandb: false
+wandb_project: null
+wandb_id: null
+wandb_entity: null
+wandb_name: null
+wandb_model_log_interval: -1
+detect_anomaly: false
+pretrain_path: null
+init_param:
+- exp/tts_train_hifigan_raw_proll_gt/train.total_count.ave.pth:tts:tts
+- exp/tts_train_raw_proll/train.loss.ave_5best.pth:tts:tts.generator.text2mel
+ignore_init_mismatch: false
+freeze_param: []
+num_iters_per_epoch: 1000
+batch_size: 20
+valid_batch_size: null
+batch_bins: 5000000
+valid_batch_bins: null
+train_shape_file:
+- exp/tts_stats_raw_midifbank_proll/train/midi_shape.proll
+- exp/tts_stats_raw_midifbank_proll/train/audio_shape
+valid_shape_file:
+- exp/tts_stats_raw_midifbank_proll/valid/midi_shape.proll
+- exp/tts_stats_raw_midifbank_proll/valid/audio_shape
+batch_type: numel
+valid_batch_type: null
+fold_length:
+- 150
+- 230400
+sort_in_batch: descending
+sort_batch: descending
+multiple_iterator: false
+chunk_length: 500
+chunk_shift_ratio: 0.5
+num_cache_chunks: 1024
+train_data_path_and_name_and_type:
+-   - dump/raw/train/text
+    - midi
+    - npz
+-   - dump/raw/train/wav.scp
+    - audio
+    - audio
+valid_data_path_and_name_and_type:
+-   - dump/raw/validation/text
+    - midi
+    - npz
+-   - dump/raw/validation/wav.scp
+    - audio
+    - audio
+allow_variable_data_keys: false
+max_cache_size: 0.0
+max_cache_fd: 32
+valid_max_cache_size: null
+optim: adam
+optim_conf:
+    lr: 1.25e-05
+    betas:
+    - 0.5
+    - 0.9
+    weight_decay: 0.0
+scheduler: exponentiallr
+scheduler_conf:
+    gamma: 0.999875
+optim2: adam
+optim2_conf:
+    lr: 1.25e-05
+    betas:
+    - 0.5
+    - 0.9
+    weight_decay: 0.0
+scheduler2: exponentiallr
+scheduler2_conf:
+    gamma: 0.999875
+generator_first: true
+token_list: dump/token_list/proll/tokens.txt
+odim: null
+model_conf: {}
+use_preprocessor: false
+token_type: proll
+bpemodel: null
+turns:
+- generator
+- discriminator
+non_linguistic_symbols: null
+cleaner: null
+g2p: g2p_en_no_space
+feats_extract: midifbank
+feats_extract_conf:
+    n_fft: 32768
+    hop_length: 288
+    win_length: 1200
+    fs: 24000
+    fmin: 5
+    fmax: 12000
+    n_mels: 128
+normalize: global_mvn
+normalize_conf:
+    stats_file: exp/tts_stats_raw_midifbank_proll/train/feats_stats.npz
+tts: joint_text2wav
+tts_conf:
+    text2mel_type: transformer
+    text2mel_params:
+        embed_dim: 0
+        eprenet_conv_layers: 0
+        eprenet_conv_filts: 0
+        eprenet_conv_chans: 0
+        dprenet_layers: 2
+        dprenet_units: 256
+        adim: 512
+        aheads: 4
+        elayers: 3
+        eunits: 1024
+        dlayers: 3
+        dunits: 1024
+        positionwise_layer_type: conv1d
+        positionwise_conv_kernel_size: 1
+        postnet_layers: 5
+        postnet_filts: 5
+        postnet_chans: 256
+        use_masking: true
+        bce_pos_weight: 5.0
+        use_scaled_pos_enc: true
+        encoder_normalize_before: true
+        decoder_normalize_before: true
+        reduction_factor: 4
+        init_type: xavier_uniform
+        init_enc_alpha: 1.0
+        init_dec_alpha: 1.0
+        eprenet_dropout_rate: 0.0
+        dprenet_dropout_rate: 0.99
+        postnet_dropout_rate: 0.5
+        transformer_enc_dropout_rate: 0.1
+        transformer_enc_positional_dropout_rate: 0.1
+        transformer_enc_attn_dropout_rate: 0.1
+        transformer_dec_dropout_rate: 0.1
+        transformer_dec_positional_dropout_rate: 0.1
+        transformer_dec_attn_dropout_rate: 0.1
+        transformer_enc_dec_attn_dropout_rate: 0.1
+        use_guided_attn_loss: true
+        num_heads_applied_guided_attn: 2
+        num_layers_applied_guided_attn: 2
+        modules_applied_guided_attn:
+        - encoder-decoder
+        guided_attn_loss_sigma: 0.4
+        guided_attn_loss_lambda: 10.0
+        idim: 128
+        odim: 128
+    vocoder_type: hifigan_generator
+    vocoder_params:
+        bias: true
+        channels: 512
+        in_channels: 128
+        kernel_size: 7
+        nonlinear_activation: LeakyReLU
+        nonlinear_activation_params:
+            negative_slope: 0.1
+        out_channels: 1
+        resblock_dilations:
+        -   - 1
+            - 3
+            - 5
+        -   - 1
+            - 3
+            - 5
+        -   - 1
+            - 3
+            - 5
+        resblock_kernel_sizes:
+        - 3
+        - 7
+        - 11
+        upsample_kernel_sizes:
+        - 16
+        - 8
+        - 6
+        - 6
+        upsample_scales:
+        - 8
+        - 4
+        - 3
+        - 3
+        use_additional_convs: true
+        use_weight_norm: true
+    discriminator_type: hifigan_multi_scale_multi_period_discriminator
+    discriminator_params:
+        follow_official_norm: true
+        period_discriminator_params:
+            bias: true
+            channels: 32
+            downsample_scales:
+            - 3
+            - 3
+            - 3
+            - 3
+            - 1
+            in_channels: 1
+            kernel_sizes:
+            - 5
+            - 3
+            max_downsample_channels: 1024
+            nonlinear_activation: LeakyReLU
+            nonlinear_activation_params:
+                negative_slope: 0.1
+            out_channels: 1
+            use_spectral_norm: false
+            use_weight_norm: true
+        periods:
+        - 2
+        - 3
+        - 5
+        - 7
+        - 11
+        scale_discriminator_params:
+            bias: true
+            channels: 128
+            downsample_scales:
+            - 4
+            - 4
+            - 4
+            - 4
+            - 1
+            in_channels: 1
+            kernel_sizes:
+            - 15
+            - 41
+            - 5
+            - 3
+            max_downsample_channels: 1024
+            max_groups: 16
+            nonlinear_activation: LeakyReLU
+            nonlinear_activation_params:
+                negative_slope: 0.1
+            out_channels: 1
+        scale_downsample_pooling: AvgPool1d
+        scale_downsample_pooling_params:
+            kernel_size: 4
+            padding: 2
+            stride: 2
+        scales: 3
+    generator_adv_loss_type: generator_adversarial_loss
+    generator_adv_loss_params:
+        average_by_discriminators: false
+        loss_type: mse
+    discriminator_adv_loss_params:
+        average_by_discriminators: false
+        loss_type: mse
+    use_feat_match_loss: true
+    feat_match_loss_params:
+        average_by_discriminators: false
+        average_by_layers: false
+        include_final_outputs: true
+    use_mel_loss: true
+    mel_loss_params:
+        fs: 24000
+        n_fft: 1024
+        hop_length: 256
+        win_length: null
+        window: hann
+        n_mels: 80
+        fmin: 0
+        fmax: null
+        log_base: null
+    lambda_text2mel: 1.0
+    lambda_adv: 1.0
+    lambda_mel: 45.0
+    lambda_feat_match: 2.0
+    sampling_rate: 24000
+    segment_size: 32
+    cache_generator_outputs: true
+pitch_extract: null
+pitch_extract_conf: {}
+pitch_normalize: null
+pitch_normalize_conf: {}
+energy_extract: null
+energy_extract_conf: {}
+energy_normalize: null
+energy_normalize_conf: {}
+required:
+- output_dir
+- token_list
+version: 0.10.3a4
+distributed: true
