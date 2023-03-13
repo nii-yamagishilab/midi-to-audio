@@ -5,6 +5,8 @@ This is the implementation for our paper submitted to ICASSP 2023:
 
 Xuan Shi, Erica Cooper, Xin Wang, Junichi Yamagishi, Shrikanth Narayanan
 
+The audio samples are uploaded to this website: https://nii-yamagishilab.github.io/sample-midi-to-audio/. 
+
 It is appreciated if you can cite this paper when the idea, code, and pretrained model are helpful to your research.
 
 The code for model training was based on the [ESPnet-TTS project](https://github.com/espnet/espnet):
